@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Security Scanner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .main-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin: 2rem auto;
+            padding: 2rem;
+            max-width: 800px;
+        }
+        .scanner-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .scanner-header h1 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .scanner-header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        .form-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            font-size: 1.1rem;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-scan {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-scan:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #667eea;
+        }
+        .results {
+            display: none;
+            margin-top: 2rem;
+        }
+        .example-urls {
+            margin-top: 1rem;
+        }
+        .example-urls .badge {
+            margin: 0.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .example-urls .badge:hover {
+            transform: scale(1.05);
+        }
+        .features {
+            margin-top: 2rem;
+        }
+        .feature-item {
+            text-align: center;
+            padding: 1rem;
+        }
+        .feature-item i {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-container">
+            <div class="scanner-header">
+                <h1><i class="bi bi-shield-check"></i> Web Security Scanner</h1>
+                <p>Analysez la sécurité de vos sites web en quelques clics</p>
+            </div>
+
+            <div class="form-container">
+                <form id="scanForm">
+                    <div class="mb-3">
+                        <label for="target" class="form-label">
+                            <i class="bi bi-globe"></i> URL ou domaine à analyser
+                        </label>
+                        <input type="text" class="form-control" id="target" name="target" 
+                               placeholder="exemple.com ou https://exemple.com" required>
+                        <div class="form-text">Entrez une URL complète ou simplement un nom de domaine</div>
+                    </div>
+                    
+                    <div class="example-urls">
+                        <small class="text-muted">Exemples rapides :</small><br>
+                        <span class="badge bg-primary" onclick="setUrl('google.com')">google.com</span>
+                        <span class="badge bg-primary" onclick="setUrl('github.com')">github.com</span>
+                        <span class="badge bg-primary" onclick="setUrl('example.com')">example.com</span>
+                        <span class="badge bg-primary" onclick="setUrl('httpbin.org')">httpbin.org</span>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-scan">
+                            <i class="bi bi-search"></i> Lancer l'analyse
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Analyse en cours...</span>
+                </div>
+                <p class="mt-3">Analyse de sécurité en cours...</p>
+            </div>
+
+            <div class="results" id="results">
+                <!-- Les résultats seront affichés ici -->
+            </div>
+
+            <div class="features">
+                <h5 class="text-center mb-4">Fonctionnalités d'analyse</h5>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="feature-item">
+                            <i class="bi bi-shield-lock"></i>
+                            <h6>En-têtes de sécurité</h6>
+                            <small class="text-muted">HSTS, CSP, X-Frame-Options...</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="feature-item">
+                            <i class="bi bi-key"></i>
+                            <h6>Certificat SSL</h6>
+                            <small class="text-muted">Validité, émetteur, SANs...</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="feature-item">
+                            <i class="bi bi-arrow-repeat"></i>
+                            <h6>Redirections</h6>
+                            <small class="text-muted">HTTP vers HTTPS</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="feature-item">
+                            <i class="bi bi-graph-up"></i>
+                            <h6>Score de sécurité</h6>
+                            <small class="text-muted">Évaluation globale</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function setUrl(url) {
+            document.getElementById('target').value = url;
+        }
+
+        document.getElementById('scanForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const target = document.getElementById('target').value;
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            
+            // Afficher le loading
+            loading.style.display = 'block';
+            results.style.display = 'none';
+            
+            try {
+                const response = await fetch('/scan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ target: target })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    displayResults(data);
+                } else {
+                    throw new Error('Erreur lors de l\'analyse');
+                }
+            } catch (error) {
+                alert('Erreur: ' + error.message);
+            } finally {
+                loading.style.display = 'none';
+            }
+        });
+
+        function displayResults(data) {
+            const results = document.getElementById('results');
+            results.innerHTML = `
+                <div class="alert alert-success">
+                    <h5><i class="bi bi-check-circle"></i> Analyse terminée</h5>
+                    <p>Rapport généré pour <strong>${data.target_display}</strong></p>
+                    <div class="d-flex gap-2">
+                        <a href="/report/${data.report_id}" class="btn btn-primary" target="_blank">
+                            <i class="bi bi-file-earmark-text"></i> Voir le rapport HTML
+                        </a>
+                        <a href="/download/${data.report_id}" class="btn btn-outline-primary">
+                            <i class="bi bi-download"></i> Télécharger JSON
+                        </a>
+                    </div>
+                </div>
+            `;
+            results.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

@@ -27,8 +27,8 @@ wheels/
 *.egg
 
 # Rapports générés
-*.html
-*.json
+webscan-report.html
+webscan-report.json
 webscan-report.*
 
 # Logs
