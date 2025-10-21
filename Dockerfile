@@ -29,6 +29,9 @@ COPY requirements.txt .
 # Installer les dépendances Python
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Installer Gunicorn pour la production
+RUN pip install --no-cache-dir gunicorn
+
 # Copier le code source
 COPY webscan_reporter.py .
 COPY start_web.py .
@@ -54,5 +57,5 @@ EXPOSE 5000
 ENV HOST=0.0.0.0
 ENV PORT=5000
 
-# Commande de démarrage
-CMD ["python", "start_web.py"]
+# Commande de démarrage avec Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--timeout", "120", "--access-logfile", "-", "--error-logfile", "-", "webscan_reporter:app"]

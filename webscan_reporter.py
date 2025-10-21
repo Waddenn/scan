@@ -975,9 +975,6 @@ const c = new Chart(document.getElementById('scoreChart'), cfg);
 
 def run_web_server(host='127.0.0.1', port=5000, debug=False):
     """Lance le serveur web Flask"""
-    print(f"🌐 Serveur web démarré sur http://{host}:{port}")
-    print("📱 Ouvrez votre navigateur et accédez à l'URL ci-dessus")
-    print("🔍 Vous pouvez maintenant scanner des sites directement depuis l'interface web")
     app.run(host=host, port=port, debug=debug)
 
 if __name__ == '__main__':
