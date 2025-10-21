@@ -101,38 +101,6 @@
             color: #667eea;
             margin-bottom: 1rem;
         }
-        
-        /* Styles pour le rapport intégré */
-        .report-content {
-            margin-top: 20px;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 20px;
-            background: #f8f9fa;
-        }
-        
-        .report-content .card {
-            margin-bottom: 15px;
-        }
-        
-        .report-content h1 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-        }
-        
-        .report-content .chart-container {
-            height: 300px;
-        }
-        
-        /* Animation pour l'apparition du rapport */
-        .report-content {
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
     </style>
 </head>
 <body>
@@ -258,61 +226,20 @@
 
         function displayResults(data) {
             const results = document.getElementById('results');
-            
-            // Afficher le rapport directement
-            fetch(`/report/${data.report_id}`)
-                .then(response => response.text())
-                .then(html => {
-                    // Extraire seulement le contenu du rapport (sans la structure HTML complète)
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const reportContent = doc.querySelector('.container');
-                    
-                    if (reportContent) {
-                        results.innerHTML = `
-                            <div class="alert alert-success mb-3">
-                                <h5><i class="bi bi-check-circle"></i> Analyse terminée pour <strong>${data.target_display}</strong></h5>
-                                <div class="d-flex gap-2">
-                                    <a href="/report/${data.report_id}" class="btn btn-sm btn-outline-primary" target="_blank">
-                                        <i class="bi bi-box-arrow-up-right"></i> Ouvrir dans un nouvel onglet
-                                    </a>
-                                    <a href="/download/${data.report_id}" class="btn btn-sm btn-outline-secondary">
-                                        <i class="bi bi-download"></i> Télécharger JSON
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="report-content">
-                                ${reportContent.innerHTML}
-                            </div>
-                        `;
-                    } else {
-                        // Fallback si l'extraction échoue
-                        results.innerHTML = `
-                            <div class="alert alert-success">
-                                <h5><i class="bi bi-check-circle"></i> Analyse terminée</h5>
-                                <p>Rapport généré pour <strong>${data.target_display}</strong></p>
-                                <div class="d-flex gap-2">
-                                    <a href="/report/${data.report_id}" class="btn btn-primary" target="_blank">
-                                        <i class="bi bi-file-earmark-text"></i> Voir le rapport HTML
-                                    </a>
-                                    <a href="/download/${data.report_id}" class="btn btn-outline-primary">
-                                        <i class="bi bi-download"></i> Télécharger JSON
-                                    </a>
-                                </div>
-                            </div>
-                        `;
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur lors du chargement du rapport:', error);
-                    results.innerHTML = `
-                        <div class="alert alert-warning">
-                            <h5><i class="bi bi-exclamation-triangle"></i> Erreur lors du chargement</h5>
-                            <p>Impossible de charger le rapport. <a href="/report/${data.report_id}" target="_blank">Cliquez ici pour l'ouvrir</a></p>
-                        </div>
-                    `;
-                });
-            
+            results.innerHTML = `
+                <div class="alert alert-success">
+                    <h5><i class="bi bi-check-circle"></i> Analyse terminée</h5>
+                    <p>Rapport généré pour <strong>${data.target_display}</strong></p>
+                    <div class="d-flex gap-2">
+                        <a href="/report/${data.report_id}" class="btn btn-primary" target="_blank">
+                            <i class="bi bi-file-earmark-text"></i> Voir le rapport HTML
+                        </a>
+                        <a href="/download/${data.report_id}" class="btn btn-outline-primary">
+                            <i class="bi bi-download"></i> Télécharger JSON
+                        </a>
+                    </div>
+                </div>
+            `;
             results.style.display = 'block';
         }
     </script>
