@@ -1,5 +1,5 @@
 # Utiliser Python 3.13 slim comme image de base
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 # Métadonnées
 LABEL maintainer="Web Security Scanner"
