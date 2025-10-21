@@ -1,0 +1,45 @@
+/* Custom styles for Web Security Scanner */
+
+/* Additional responsive styles */
+@media (max-width: 768px) {
+    .summary-stats {
+        flex-direction: column;
+    }
+    
+    .stat-item {
+        margin-bottom: 1rem;
+    }
+    
+    .chart-container {
+        height: 250px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .card {
+        background-color: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .card-title {
+        color: #f7fafc;
+    }
+    
+    .table {
+        color: #e2e8f0;
+    }
+}
+
+/* Print styles */
+@media print {
+    .btn, .navbar, .footer {
+        display: none !important;
+    }
+    
+    .card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}

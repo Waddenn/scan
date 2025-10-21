@@ -32,6 +32,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copier le code source
 COPY webscan_reporter.py .
 COPY start_web.py .
+
+# Créer les dossiers nécessaires
+RUN mkdir -p templates static/css static/js
+
+# Copier les dossiers (ils doivent exister maintenant)
 COPY templates/ templates/
 COPY static/ static/
 
