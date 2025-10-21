@@ -57,5 +57,5 @@ EXPOSE 5000
 ENV HOST=0.0.0.0
 ENV PORT=5000
 
-# Commande de démarrage avec Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--timeout", "120", "--access-logfile", "-", "--error-logfile", "-", "webscan_reporter:app"]
+# Commande de démarrage avec Gunicorn (silencieux)
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--timeout", "120", "--access-logfile", "/dev/null", "--error-logfile", "/dev/null", "--log-level", "critical", "webscan_reporter:app"]
